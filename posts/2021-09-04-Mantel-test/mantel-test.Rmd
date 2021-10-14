@@ -1,0 +1,77 @@
+---
+title: Prueba de Mantel
+author: Yunier Olivera
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_float:
+        collapsed: no
+    number_sections: no
+    self_contained: no
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE)
+
+
+library(knitr)
+library(tidyverse)
+library(sf)
+library(vegan)
+
+```
+
+# Prueba de Mantel en R
+
+A continuación muestro una aplicación de la ... en R. Generaré datos aleatorios que muestren datos hipotéticos de tamaños de hojas de árboles en un bosque. Los datos siguen una distribución normal, corresponden a 100 hojas colectadas de forma aleatoria en cada uno de 10 sitios ubicados aleatoriamente.
+
+```{r message=FALSE, warning=FALSE}
+
+# paquetes
+#library(tidyverse)
+#library(sf)
+#library(vegan)
+
+set.seed(1234)
+
+# Generamos 100 valores siguiendo una distribucion de Poisson y con media 15,
+# que servirán como promedio aleatorio para los datos de tamaños de hojas.
+mu <- rpois(100, 10)
+mu
+
+# Creamos una tabla de datos en 10 sitios, siguiendo una distribución normal con
+# media mu
+hojas <- mu %>% 
+   map(rnorm, n = 10) |> 
+   bind_cols()
+
+# Calculamos las diferencias en los tamaños de hojas
+dif_hojas <- vegdist(hojas, method = "euclidean")
+
+# Creamos puntos geográficos aleatorios que serviran como sitios de muestreo
+nc <- st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE)
+sitios <- st_sample(nc, 10)
+sitios |>
+   ggplot() +
+   geom_sf() +
+   geom_sf_label(aes(label = 1:10,
+                     color = as_factor(1:10)),
+                 show.legend = FALSE) +
+   theme_minimal()
+
+
+# Calculamos las distancias entre los sitios
+dist_sitios <- st_distance(sitios) |> 
+   as.dist()
+
+
+# Prueba de Mantel, con la función mantel() del paquete vegan
+mantel(dist_sitios, dif_hojas)
+
+
+```
+
+El valor de p es mayor que 0.05, así que no rechazamos la hipótesis nula que establece que no hay relación relación entre la diferencias en los tamaños de hojas entre los sitios y las distancias geográficas entre estos.

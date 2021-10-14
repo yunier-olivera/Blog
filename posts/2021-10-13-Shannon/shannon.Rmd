@@ -1,0 +1,118 @@
+---
+title: "¿Que nombre le ponemos: Shannon, Shannon-Wiener, Shannon-Weaver?"
+author: Yunier Olivera
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_float:
+        collapsed: no
+    number_sections: no
+bibliography: [shipping/Shannon/references.bib]
+csl: coral-reefs-es.csl
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(janitor)
+
+
+#list.files("shipping/Shannon")
+
+indices <- c("Shannon-Weaver.txt", "Shannon-Weiner.txt",
+             "Shannon-Wiener.txt", "shannon diversity.txt")
+
+indices_list <- list()
+
+for (i in 1:length(indices)) {
+   
+   x <- readLines(paste0("shipping/Shannon/", indices[i]))
+   name <- as.vector(x)[1]
+   
+   w <- x |>
+      str_remove(",") |>
+      str_extract("\\d+") |> 
+      discard(is.na) |> 
+      as_tibble()
+   w <- w |>
+      mutate(ids = rep(c("year", "papers"), nrow(w)/2),
+             citation = make_clean_names(name),
+             value = as.numeric(value))
+   
+   indices_list[[i]] <- w
+}
+
+```
+
+<!--Resumen-->
+
+Las mejores formas de referirse al índice H' son índice de Shannon o índice de Shannon-Wiener, mientras que es cuestionable el uso del término índice de Shannon-Weaver y el índice de Shannon-Weiner no existe. Ve debajo las posibles causas de la confusión.
+
+# El índice de diversidad de Shannon
+
+`r sprintf("<span style='color: %s;'>%s</span>", "#989898", "Version en RMarkdown y código en xXx")`
+
+El índice de diversidad de Shannon es uno de los índices de diversidad más populares. Esta medida fue propuesta por Claude Shannon en 1948 para cuantificar la entropía en secuencias de texto (de ahí el nombre de entropía de Shannon).
+
+El índice se basa en la teoría de la comunicación y se relaciona con una pregunta habitual: ¿cómo predecir la próxima letra en un mensaje o comunicación? [@spellerberg2003]. La idea del análisis es que entre más letras haya en una cadena de caracteres y entre más parecidas sean sus abundancias relativas, más difícil será poder predecir cuál letra es la siguiente. La medida propuesta por Shannon cuantifica la incertidumbre (entropía o grado de sorpresa) asociada a esta predicción, siguiendo la ecuación:
+
+${\displaystyle H'=-\sum _{i=1}^{R}p_{i}\ln p_{i}}$
+
+donde $p_i$ es la proporción de caracteres pertenecientes al $i$-ésimo tipo de letra en la secuencia de interés.
+
+En ecología, $p_i$ es la proporción de individuos pertenecientes a la $i$-ésima especie en la base de datos. En este ámbito, la entropía de Shannon calcula la incertidumbre en predecir la especie de un individuo tomado de forma aleatoria de la base de datos.
+
+# Pero, ¿por qué hay tantos nombres para el índice de Shannon?
+
+En la literatura, el "índice de Shannon" a veces se denomina índice de "Shannon-Weaver", índice de "Shannon-Wiener" e incluso índice de "Shannon-Weiner".
+
+¿Son todos estos nombres correctos? Como seguramente ya sabes, no lo son. Y de paso te adelanto la respuesta: los nombres válidos son **índice de Shannon** e **índice de Shannon-Wiener**.
+
+Pero veamos cómo se generó la confusión.
+
+Claude Shannon se graduó en matemáticas y en ingeniería eléctrica en 1936. Luego de estancias en el Instituto de Tecnología de Massachusetts (MIT) y la Universidad de Princeton, comenzó a trabajar para los laboratorios Bell Telephone en Nueva Jersey en 1941. donde pasaría 15 años entre una comunidad científica muy respetada. Tras su investigación sobre la comunicación de información, resumió sus ideas en un artículo publicado en 1948 [@shannon1948], donde propone el índice conocido por su nombre.
+
+En este mismo trabajo, Shannon reconoce que la teoría de la comunicación está muy en deuda con el matemático Norbert Wiener por gran parte de su filosofía y teoría básicas [*Communication theory is heavily indebted to Wiener for much of its basic philosophy and theory*, @shannon1948]. Por esa relación en el trabajo de ambos autores parace ser que se originó la primera referencia al índice de Shannon-Wiener en ecología.
+
+De hecho, la "medida de Shannon-Wiener" ha aparecido en artículos científicos desde 1950 [@igut2017]. De acuerdo con @igut2017, @good1953 utilizó el índice por primera vez en ecología como una medida de la heterogeneidad de la población animal. Mientras que @good1953 citó el artículo original de Shannon [@shannon1948], poco tiempo después @macarthur1955, a menudo considerado el primero en introducir el índice Shannon-Wiener en la ecología, citó un libro de @shannon1949 que contenía el trabajo original de Shannon de 1948.
+
+El libro de Shannon y Weaver es un volumen pequeño con dos secciones o informes, que son reimpresiones de informes de unos 14 años antes [@spellerberg2003]:
+
+1.  "La teoría matemática de la comunicación" por Claude E. Shannon, Bell Telephone Laboratories. Esta es una reimpresión del articulo original en la Bell System Technical Journal, 1948, con algunas correcciones y referencias adicionales.
+
+2.  "Contribuciones recientes a la teoría matemática de la comunicación" por Warren Weaver, la Fundación Rockefeller. Este artículo no se había publicado previamente en esta forma, pero apareció una versión condensada en Scientific American en julio de 1949.
+
+Entonces, la combinación del índice Shannon-Wiener con la cita de @shannon1949 probablemente llevó a algunos autores a pensar que "Wiener" fue un error tipográfico de "Weaver". Si el nombre de Weaver hubiera sido diferente y no similar a "Wiener", esta confusión podría no haber surgido [@spellerberg2003].
+
+Ah y con respecto al "índice de Shannon-Weiner", nop, no existe.
+
+# Estadísticas del uso de los nombres en publicaciones científicas
+
+EL gráfico siguiente muestra las tendencias en el numero de citas de cuatro formas de referirse al índice de Shannon. La popularidad del índice continua en ascenso y la mayoría de las citas son correctas, pero con la mayor popularidad también están aumentando las referencias inadecuadas al índice.
+
+```{r plot, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Número de citas del índice de Shannon por años. Los datos resultaron de busquedas de cuatro referencias al mismo índice, en la página [Dimensions](https://www.dimensions.ai/)."}
+
+p <- bind_rows(indices_list) |> 
+   mutate(across(citation:ids, str_to_title),
+          citation = str_replace(citation, "_w", "-W"),
+          citation = str_replace(citation, "Shannons_diversity", "Shannon's diversity")) |> 
+   pivot_wider(values_from = value,
+               names_from = ids) |> 
+   unnest(-citation) |> 
+   ggplot(aes(Year, Papers, color = citation)) +
+   geom_line() +
+   labs(color = "Index name:") +
+   theme_minimal() +
+   theme(legend.position = c(0.15, 0.8),
+         legend.background = element_rect(fill = "white", color = "transparent"))
+
+p
+```
+
+# Cuestiones adicionales sobre el cálculo del índice de Shannon
+
+Aunque la ecuación arriba usa logaritmos naturales, la base del logaritmo en la ecuación se puede elegir sin problemas. En la misma publicación original, Shannon se refirió a las bases de logaritmos 2, 10 y $e$, y se volvieron las bases más populares en aplicaciones que utilizan el índice. Cada base logarítmica corresponde a una unidad de medida diferente, que se denominan dígitos binarios (*bits*, aunque también se les conocen como *shannon*) para la base 2, dígitos decimales (*decits*) para la base 10 y dígitos naturales (*nat*) para la base $e$. La comparación de los valores de entropía de Shannon que se calcularon originalmente con diferentes bases logarítmicas requiere convertirlos a la misma base logarítmica: el cambio de la base $a$ a la base $b$ se obtiene multiplicando por $log_ba$.
+
+# Referencias
