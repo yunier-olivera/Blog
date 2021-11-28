@@ -1,0 +1,15 @@
+---
+title: Prueba de Mantel
+author: Yunier Olivera
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_float:
+        collapsed: no
+    number_sections: no
+    self_contained: no
+    bibliography: [shipping/Shannon/references.bib]
+csl: coral-reefs-es.csl
+---

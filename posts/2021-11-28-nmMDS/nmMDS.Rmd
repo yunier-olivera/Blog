@@ -1,0 +1,73 @@
+---
+title: Escalado Multidimensional no métrico (nmMDS)
+author: Yunier Olivera
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_float:
+        collapsed: no
+    number_sections: no
+    self_contained: no
+---
+
+```{r, include=FALSE}
+library(vegan)
+library(tidyverse)
+library(broom)
+
+```
+
+La ventaja del PCoA sobre el PCA, es que el primero puede usar cualquier medida de asociación y el segundo está limitado a los coeficientes de correlación y covarianza.
+
+El nmMDS tiene el mismo propósito que el PCoA, calcular una matriz de distancia (digamos D) y producir una configuración gráfica en un espacio poco dimensional (usualmente dos o tres), puede usar también cualquier medida de asociación pero es mejor preservando la estructura alta-dimensional *(high-dimensional*) en unos pocos ejes. Su desventaja es que no está basado en una *eigenvalue solution* sino en métodos de optimización numérica y para bases de datos largas los cálculos tienden a tomar mucho tiempo, incluso en computadoras rápidas.
+
+La diferencia entre PCoA y nmMDS es que en el primero las distancias en la configuración deben coincidir con las distancias originales, lo más exacto posible. En nmMDS es el orden, o rangos, de las distancias en D las que se tratan de representar lo mejor posible. Como ejemplo Zuur et al. ponen en la tabla 15.1 los índices de Jaccard de su ejemplo con familias de plantas. Los índices se convirtieron en disimilitudes. Esto es lo que se usa en el PCoA, produce una configuración que concuerde con 15.1 lo más posible. En la 15.2 se convierten en rangos. Las familias As y Ac tienen la disimilitud más baja (son las más similares) y por tanto son del rango 1, etc. el nmMDS producirá una configuración que concuerde con 15.2 lo más posible. Por tanto, en el diagrama de ordenación del nmMDS, las familias que más cerca estén entre sí representan familias que son más similares entre ellas que las demás.
+
+```{r}
+
+vegetation <- t(data.frame(Vi = rbinom(20, 1, .73),
+                  Wa = rbinom(20, 1, .41),
+                  Xi = rbinom(20, 1, .52),
+                  Ju = rbinom(20, 1, .82),
+                  Za = rbinom(20, 1, .22)))
+
+jacc_vegetation <- vegdist(x, method = "jaccard")
+
+tidy(jacc_vegetation) |>
+   rowid_to_column() |>
+   arrange(distance) |> 
+   mutate(sorted = 1:10) |>
+   arrange(rowid) |>
+   select(-rowid, -distance) |> 
+   pivot_wider(id_cols = item2,
+               names_from = item1,
+               values_from = sorted) 
+```
+
+Zuur et al. comentan que en la mayoría de los libros se dice que los nmMDS son mejores observando las relaciones en el espacio bajo-dimensional comparados con los PCoA. De acuerdo con Zuur esto no es totalmente cierto dado que se comparan dos cosas diferentes: distancias absolutas y rangos. Es solo que en la mayoría de los estudios ecológicos, uno todavía se contenta más con la información de que las familias A y B son más similares que C y D (nmMDS), y no con saber que A y B son cinco veces más similares que C y D (PCoA).
+
+Zuur et al. brinda los pasos matemáticos para el cálculo. No es necesario verlo. Te lo pongo porque a continuación explican que el algoritmo del nmMDS es iterativo, y para bases de datos grandes, el inicio del algoritmo con diferentes datos iniciales puede dar resultados diferentes. NOTA: yo creo que las funciones en R dan el mejor de varios intentos, o sea, el resultado con el STRESS más bajo. El PAST lo hace así.
+
+**Cómo evaluar la calidad del gráfico**
+
+En el PCA, CA y PCoA se tienen los eigenvalue, que pueden ser usados para evaluar la calidad del gráfico resultante. En el nmMDS se usa el STRESS para medir cuan buena es la configuración *m*-dimensional. Existen varias opciones. Una de ellas es calcular el STRESS para diferentes valores de *m* (número de ejes) y hacer un diagrama *scree*, igual al que se hace en el PCA con los eigenvalue. En el eje *x* se grafican el número de ejes *m* y en el eje *y* el STRESS. Un cambio evidente en el stress (*elbow effect*) indicaría el valor óptimo de *m*.
+
+Otra alternativa es usar la regla de bobito chico del manual del PRIMER:
+
+
+- STRESS smaller than 0.05. The configuration is excellent and allows for a detailed inspection.
+- STRESS between 0.05 and 0.1. Good configuration and no need to increase m. 
+- STRESS between 0.1 and 0.2. Be careful with the interpretation.
+- STRESS between 0.2 and 0.3. Problems start, especially in the upper range of this interval.
+- STRESS larger than 0.3. Poor presentation and consider increasing m. 
+
+
+
+
+As a rule of thumb literature has identified the following cut-off values for stress-level: 
+Higher than 0.2 is poor (risks for false interpretation). 
+0.1 - 0.2 is fair (some distances can be misleading for interpretation). 
+0.05 - 0.1 is good (can be confident in inferences from plot).
+Less than 0.05 is excellent (this can be rare).
