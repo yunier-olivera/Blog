@@ -1,0 +1,78 @@
+---
+title: Análisis de Redundancia (RDA)
+author: Yunier Olivera
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_float:
+        collapsed: no
+    number_sections: no
+    self_contained: no
+  bookdown::word_document2:
+    toc: yes
+    number_sections: no
+bibliography: references.bib
+csl: ../../resources/coral-reefs-es.csl
+---
+
+El Análisis de Redundancia es una método para evaluar cuánta variación en una base de datos puede ser explicada por otra base de datos de variables explicativas. Es un análogo multivariado de la regresión.
+
+# Análisis de Redundancia (RDA)
+
+El análisis de redundancia puede verse como un análogo o una extensión de la regresión multiple linear, pero que incluye múltiples variables respuesta. Es un análisis de gradiente que evalúa las relaciones lineales entre variables respuestas que son "redundantes con" (esto significa: "explicadas por") un conjunto de variables explicativas [@buttigieg2014].
+
+Algunos autores consideran al RDA como una extensión de los [Análisis de Componentes Principales (PCA)](https://yunierolivera.com/blog/pca/) que explícitamente modelan las variables respuesta como una función de las variables explicativas [@zuur_2007_analysing]. Usualmente los PCA solo incluyen variables respuesta, sin las variables explicativas, debido a que el PCA se enfoca en aquellas variables con correlaciones más altas (covarianza), que generalmente son las variables explicativas. Si las variables explicativas están altamente correlacionadas entre ellas, los gradientes principales tendrán información solo de dichas variables explicativas, haciendo el PCA una herramienta poco útil para evaluar el comportamientos de variables respuesta en estos casos. Aquí es donde entran los análisis de redundancia.
+
+# Resultados
+
+La salida gráfica del análisis consiste en dos biplots, uno encima del otro, que en su conjunto se le conoce como *triplot*. Hay tres componentes en este gráfico:
+
+1.  Las variables explicativas cuantitativas son representadas por líneas y las variables explicativas cualitativas (nominales) son representadas por cuadrados (uno por cada nivel de esta variable nominal).
+2.  Las variables respuesta se representan por lineas o etiquetas. Si hay muchas variables, es menos confuso el gráfico usando etiquetas.
+3.  Las muestras se representan por puntos o etiquetas. Igual al punto 2, si hay muchas muestras es mejor usar puntos para mejorar la visualización gráfica.
+
+Las opciones e interpretación son similares al del biplot de PCA. Primero decidimos el escalado: triplot de correlación o de distancia. Segundo, si usaremos una matriz de covarianza o una matriz de correlación para las variables respuesta. Lo nuevo con respecto a los biplots de los PCA, es el uso de líneas para representar las variables explicativas cuantitativas y los cuadrados para las cualitativas.
+
+Las reglas para la interpretación del triplot de correlación en RDA:
+
+1.  Los ángulos entre las líneas de las variables respuesta representan correlación entre estas.
+
+2.  Los puntos de las observaciones pueden proyectarse perpendicularmente sobre las líneas de las variables respuesta e indican los valores.
+
+3.  Los puntos de las observaciones no pueden compararse entre ellos.
+
+4.  Los ángulos entre líneas de variables explicativas cuantitativas representan correlaciones entre ellas. Estas no son tan exactas como las obtenidas en un PCA aplicado a las variables explicativas.
+
+5.  Los ángulos entre las líneas de variables respuesta y las variables explicativas representan correlaciones.
+
+6.  Las observaciones se pueden proyectar perpendicularmente sobre las lineas de variables explicativas, e indican los valores de las variables explicativas en esos sitios.
+
+7.  Las variables explicativas cualitativas (codificadas como 0-1) pueden ser representadas como un cuadrado. Su posición es determinada por el centroide de las observaciones que tienen el valor 1 (en esta variable). Las distancias entre los centroides, y entre observaciones y centroides no son aproximaciones de sus distancias euclidianas.
+
+    Un cuadrado se puede proyectar perpendicularmente sobre una línea de una variable respuesta y representa el promedio del valor de esa variable respuesta en esa categoría de la variable explicativa cualitativa.
+
+Las primeras tres reglas son similares a las del biplot de correlación de PCA.
+
+Para el triplot de distancia tenemos:
+
+1.  Los ángulos entre las líneas de especies no representan correlación.
+2.  Los puntos de las observaciones pueden proyectarse perpendicularmente sobre las líneas de las variables respuesta e indican los valores ajustados (*fitted values*).
+3.  Las distancias entre los puntos de las observaciones representan una aproximación bidimensional de sus distancias euclidianas.
+4.  Los ángulos entre las líneas de las variables respuesta y las variables explicativas cualitativas representan una aproximación bidimensional de sus correlaciones.
+5.  Las variables explicativas cualitativas (codificadas como 0-1) pueden ser representadas como un cuadrado. Su posición es determinada por el centroide de las observaciones que tienen el valor 1 (en esta variable). Las distancias entre los centroides, y entre observaciones y centroides son aproximaciones de sus distancias euclidianas. Un cuadrado se puede proyectar perpendicularmente sobre una línea de una variable respuesta y representa el valor promedio de la variable respuesta para esa categoría de la variable explicativa.
+
+# Otras notas
+
+Los triplots de correlación y de distancia se llaman también triplot condicional de especies (*species-conditional triplot*) y triplot condicional de sitios (*site-conditional triplot*), o escalado 2 y escalado 1.
+
+Si lo que nos interesan son las observaciones debe usarse el triplot de distancia y si nos interesan las variables, el de correlaciones.
+
+Dado que el RDA consiste en una serie de regresiones lineales, necesitamos tener más observaciones que variables explicativas.
+
+Los resultados indican cuánto de las variables respuesta es explicado por las explicativas. De este porcentaje entonces dan que % es explicado en los dos primeros ejes.
+
+# Tranformaciones de Chord y Hellinger
+
+Al igual que el PCA, el RDA está basado en el coeficiente de correlación (o covarianza) . Por tanto, mide relaciones lineales y es afectado por los ceros dobles. Las mismas transformaciones especiales que se usan en el PCA se pueden usar aquí: el RDA se puede usar para visualizar las distancias de Chord y Hellinger.

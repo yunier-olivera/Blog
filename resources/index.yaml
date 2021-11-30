@@ -10,6 +10,9 @@ output:
         collapsed: no
     number_sections: no
     self_contained: no
-    bibliography: [shipping/Shannon/references.bib]
-csl: coral-reefs-es.csl
+  bookdown::word_document2:
+    toc: yes
+    number_sections: no
+bibliography: references.bib
+csl: ../../resources/coral-reefs-es.csl
 ---
