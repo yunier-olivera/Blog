@@ -1,0 +1,45 @@
+---
+title: "Estándar: la desviación y el error"
+author: Yunier Olivera
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_float:
+        collapsed: no
+    number_sections: no
+    self_contained: no
+  bookdown::word_document2:
+    toc: yes
+    number_sections: no
+bibliography: references.bib
+csl: ../../resources/coral-reefs-es.csl
+---
+
+<https://esajournals.onlinelibrary.wiley.com/doi/pdfdirect/10.1890/0012-9623%282004%2985%5B74%3ASWAPGF%5D2.0.CO%3B2>
+
+<https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.537.7985&rep=rep1&type=pdf>
+
+<https://journals.sagepub.com/doi/full/10.1177/0253717620933419>
+
+**\
+Streiner (1996)** da una explicación detallada de que es la desviación estándar, el error estándar y los intervalos de confianza.
+
+Desviación estándar (SD): es la distribución (o la dispersión) de los valores individuales alrededor de la media.
+
+![](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/344ed297-bd04-4ca8-866c-8d2148901fe0/image4.png)
+
+Error estándar (SE): refleja la variabilidad de la media de las muestras si hubiésemos repetido el análisis muchas veces.
+
+![](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8139d183-9144-4abd-9de7-2fd11afa5a30/image5.png)
+
+Intervalos de confianza (CI): puede aplicar tanto a SD como a SE, y es el rango dentro del cual se encuentra la media verdadera o la diferencia entre las medias. Normalmente se expresa el 90, 95 o 99 % del intervalo de confianza. Para calcularlo se multiplica el SD o SE de acuerdo al % que quieres usar: 90 % (1.65 × SE o SD), 95 % (1.96 × SE) y 99 % (2.58 × SE). En las figuras, el 95 % se puede redondear a 2, porque visualmente no se distingue mucho; pero en las tablas se debe multiplicar por el valor exacto.
+
+Cual de los dos escribir? Los autores dicen con expresar la media y la SD es suficiente, dado que los lectores pueden calcular el SE y los CI. Pero no siempre es así. Por ejemplo, para definir las diferencias entre dos muestras es mejor usar los CI del SE, ya que esto da una mejor idea de si dos muestras pueden venir de la misma población. Si los CI no se superponen, entonces una prueba de hipótesis dará una diferencia significativa (p \< 0.05). A veces, las p dan significativas pero las muestras son pequeñas, por eso muchos aconsejan expresar los CI porque tienen más significado y dan más información sobre las diferencias reales que se estudian.
+
+Al graficar o tabular, no uses el SE alrededor de la media solamente, porque esto solo expresa el 65 % del intervalo de confianza. Lo normal es que se use el 95 %, así que tienes que mostrar el 1.96 × SE alrededor de la media (esto aplica también para el 90 y 99 %). Además señalan que el SE solo no es importante, su propósito principal es calcular los CI.
+
+# Referencias
+
+Streiner DL. Maintaining standards: Differences between the standard deviation and standard error, and when to use each. Can J Psychiatry. 1996; 41: 498--502

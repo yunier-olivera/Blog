@@ -1,0 +1,63 @@
+---
+title: PERMANOVA
+author: Yunier Olivera
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_float:
+        collapsed: no
+    number_sections: no
+    self_contained: no
+  bookdown::word_document2:
+    toc: yes
+    number_sections: no
+bibliography: references.bib
+csl: ../../resources/coral-reefs-es.csl
+---
+
+```{r}
+
+```
+
+PERMANOVA es una prueba no paramétrica de diferencia significativa entre dos o más grupos, basada en cualquier medida de distancia.
+
+# Que es un PERMANOVA?
+
+El análisis de varianza multivariado con permutaciones (*permutational multivariate analysis of variance*, PERMANOVA) es una prueba estadística multivariada no parámetrica. El PERMANOVA compara dos o más grupos de objetos y evalúa la hipótesis nula de que los centroides (*e.g.* la media) y la dispersión son equivalentes para todos los grupos, o sea, no hay diferencias.
+
+Una diferencia significativa evidencia diferencias en los centroides o en la dispersión; repito este detalle porque es importante, PERMANOVA no distingue entre centroides y dispersión. La significación puede darse debido a diferencias en la dispersión, aunque no cambien los centroides [@anderson] (Anderson 2001).
+
+Para verificar si es la dispersión la que difiere entre los grupos, se puede aplicar una prueba como PERMDISP (en el software PRIMER) o usar `betadisper()` en vegan.
+
+Es similar al ANOVA en el sentido de que compara grupos, pero se diferencia en que ANOVA calcula la *p* a partir de la asunción de normalidad y PERMANOVA no asume ninguna distribución para los datos. PERMANOVA calcula la *p* comparando el estadístico *F* de los datos reales con las *F* de los datos obtenidos a partir de permutaciones. Dichas permutaciones se hacen intercambiando observaciones entre los grupos. Para diseños que usan más de un factor, hay que tener en cuenta el tipo de permutación a aplicar.
+
+# Ventajas del PERMANOVA
+
+La única asunción del PERMANOVA es la intercambiabilidad de observaciones entre grupos (Anderson 2001). Esto básicamente encabeza las ventajas con respecto al ANOVA, que tienen tres asunciones: normalidad, homocedasticidad e independencia de errores.
+
+PERMANOVA es robusto frente la heterogeneidad en diseños balanceados y es menos robusto ante diseños no balanceados, cuando el tamaño de muestra difiere entre las muestras (Anderson y Walsh 2013).
+
+PERMANOVA (which is basically `adonis()`) was found to be largely unaffected by heterogeneity in Anderson & Walsh's simulations but only for *balanced* designs.
+
+For unbalanced designs PERMANOVA and ANOSIM were
+
+1.  too liberal if the smaller group had greater dispersion, and
+
+2.  too conservative if the larger group had greater dispersion.
+
+De acuerdo con Anderson y Walsh (2013), PERMANOVA es generalmente más potente para detectar cambios en la estructura comunitaria, comparado con Mantel y ANOSIM.
+
+# Aplicación en R
+
+PERMANOVA se puede realizar en programas como el PAST, PRIMER y en R con la función `adonis()` del paquete `vegan`.
+
+A continuación veremos un ejemplo breve sobre cómo realizar el análisis en R.
+
+<https://f-santos.gitlab.io/2020-05-07-npmanova.html>
+
+\
+So both `adonis` and `adonis2` essentially get at the same goal. They are an implementation of a non-parametric permutation based MANOVA (often called PERMANOVA). The goal of this test is to tell you if there are significant differences in your response variables among your groupings. In `adonis` terms are tested sequentially and this is the only option. This means that the order you enter your variables is important (if design is unbalanced). For example using the `dune` and `dune.env` data sets in vegan, `adonis(dune~Management+Use, data=dune.env)` will give a different result than `adonis(dune~Use+Management, data=dune.env)`. This is because the first explanatory variable is added to the model. Then the next one is added to see if it explains significantly more variation not explained by the previous variables. This is equivalent to using `by="terms"` in `adonis2`. If you don't want the order to matter you can use `adonis2` with `by="margin"`, or if you want to check if the model as a whole is significant you can use `by=NULL`. Order does not matter when `by="margin"` because the significance is tested against a model that includes all other variables not just the ones preceding it in the formula. It seems that `strata` is now deprecated in favor of defining blocks in the `permutations` argument now (see adonis help). Anyway, these arguments allow you to specify how to restrict which rows can be exchanged during the permutation procedure used to calculate p values.
+
+It's also worth noting that `adonis` and `adonis2` also use different code to do similar things. According to the help page, `adonis` "is directly based on the algorithm of Anderson (2001)" which was about a permutational manova, while `adonis2` is "based on the principles of McArdle & Anderson (2001)." That paper is actually about distance-based redundancy analysis (multivariate multiple regression) which can be used as a MANOVA by transforming categorical variables into dummy variables of 1's and 0's. This is likely why `adonis2` has some additional flexibility compared to `adonis`.

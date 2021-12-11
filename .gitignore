@@ -40,3 +40,4 @@ vignettes/*.pdf
 
 # Unwanted files and folders
 shipping/Covid.zip
+resources/publish.R
