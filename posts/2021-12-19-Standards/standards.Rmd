@@ -17,29 +17,54 @@ bibliography: references.bib
 csl: ../../resources/coral-reefs-es.csl
 ---
 
-<https://esajournals.onlinelibrary.wiley.com/doi/pdfdirect/10.1890/0012-9623%282004%2985%5B74%3ASWAPGF%5D2.0.CO%3B2>
+No es raro encontrar que muchos investigadores y estudiantes sepan qué significa la desviación estándar y el error estándar de la media, pero pocos saben cuál debería usarse y por qué \[\] (Andrade 2020).
 
-<https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.537.7985&rep=rep1&type=pdf>
+En mi caso, aunque me resisto a aceptarlo, no me queda más remedio que incluirme en el segundo grupo también. Así que decidí revisar este tema y ahora compartiré contigo lo que encontré.
 
-<https://journals.sagepub.com/doi/full/10.1177/0253717620933419>
+# Algunos conceptos
 
-**\
-Streiner (1996)** da una explicación detallada de que es la desviación estándar, el error estándar y los intervalos de confianza.
+La **desviación estándar** (DE, en inglés SD) es la distribución (o la dispersión) de los valores individuales alrededor de la media. Una DE grande indica que los valores están muy dispersos alrededor de la media. Por el contrario, si la SD es pequeña, la dispersión también es pequeña.
 
-Desviación estándar (SD): es la distribución (o la dispersión) de los valores individuales alrededor de la media.
+Otro aspecto importante es que, en una distribución normal, existe una relación específica entre la media y la DE: la media ± 1 DE incluye el 68.3% de la población, la media ± 2 DE contiene el 95.5% de la población y la media ± 3 DE contiene 99.7 % de la población (Andrade 2020).
 
-![](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/344ed297-bd04-4ca8-866c-8d2148901fe0/image4.png)
+Contrary to popular misconception, the standard deviation is a valid measure of variability regardless of the distribution. About 95% of observations of any distribution usually fall within the 2 standard deviation limits, though those outside may all be at one end. \[@altman 2005\]
 
-Error estándar (SE): refleja la variabilidad de la media de las muestras si hubiésemos repetido el análisis muchas veces.
+El **error estándar** (EE, en inglés SE) refleja la variabilidad de la media de las muestras si hubiésemos repetido el análisis muchas veces.
 
-![](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8139d183-9144-4abd-9de7-2fd11afa5a30/image5.png)
+$$
+EE = \frac{SD} {\sqrt{N}} \quad \small{\text{donde N es el tamaño de muestra}}
+$$
 
-Intervalos de confianza (CI): puede aplicar tanto a SD como a SE, y es el rango dentro del cual se encuentra la media verdadera o la diferencia entre las medias. Normalmente se expresa el 90, 95 o 99 % del intervalo de confianza. Para calcularlo se multiplica el SD o SE de acuerdo al % que quieres usar: 90 % (1.65 × SE o SD), 95 % (1.96 × SE) y 99 % (2.58 × SE). En las figuras, el 95 % se puede redondear a 2, porque visualmente no se distingue mucho; pero en las tablas se debe multiplicar por el valor exacto.
+El valor medio que obtenemos en nuestro estudio es solo una aproximación del valor medio en la población. Si repetimos nuestro estudio un gran número de veces, obtendremos valores diferentes para la media cada vez. El EE expresa esta variabilidad en las medias de los estudios subsecuentes.
 
-Cual de los dos escribir? Los autores dicen con expresar la media y la SD es suficiente, dado que los lectores pueden calcular el SE y los CI. Pero no siempre es así. Por ejemplo, para definir las diferencias entre dos muestras es mejor usar los CI del SE, ya que esto da una mejor idea de si dos muestras pueden venir de la misma población. Si los CI no se superponen, entonces una prueba de hipótesis dará una diferencia significativa (p \< 0.05). A veces, las p dan significativas pero las muestras son pequeñas, por eso muchos aconsejan expresar los CI porque tienen más significado y dan más información sobre las diferencias reales que se estudian.
+Los **intervalos de confianza** (IC, en inglés CI) es el rango dentro del cual se encuentra la media verdadera o la diferencia entre las medias. Normalmente se expresa el 90%, 95% o 99 % del intervalo de confianza.
 
-Al graficar o tabular, no uses el SE alrededor de la media solamente, porque esto solo expresa el 65 % del intervalo de confianza. Lo normal es que se use el 95 %, así que tienes que mostrar el 1.96 × SE alrededor de la media (esto aplica también para el 90 y 99 %). Además señalan que el SE solo no es importante, su propósito principal es calcular los CI.
+Para calcular el IC se multiplica el EE por un valor que cambia de acuerdo al porcentaje que se desee:
+
+$$
+90\% \ IC = 1.65 \times EE \\[5pt]
+95\% \ IC = 1.96 \times EE \\[5pt]
+99\% \ IC = 2.58 \times EE
+$$
+
+Cuando se grafica, el valor 1.96 para el 95 % IC se puede redondear a 2, porque visualmente no se distingue mucho; pero en las tablas se debe multiplicar por el valor exacto.
+
+# Cuándo usarlos
+
+De acuerdo con Streiner (1996), cuando se describe una muestra, con expresar la media y la SD es suficiente porque los lectores pueden calcular el EE y el IC.
+
+Pero no siempre es así. Por ejemplo, para definir las diferencias entre dos muestras es mejor usar IC, ya porque da una mejor idea de si dos muestras pueden venir de la misma población. Si los IC no se superponen, entonces una prueba de hipótesis paramétrica dará una diferencia significativa (p \< 0.05).
+
+Otra razon por la que debería usarse el IC es que a veces las pruebas estadísticas dan valores de p significativos pero los tamaños de muestra son pequeños. Por eso se aconseja expresar los CI porque dan más información sobre las diferencias reales que se estudian.
+
+Al graficar o tabular, algunos autores muestran el EE alrededor de la media porque muestra menos dispersión (el EE siempre es menor que la DE) y los gráficos indican mayor precision y lucen mejor. Esto es común en estudios de ecología donde los datos son muy variables y las medidas de dispersión son muy grandes. Sin embargo, cuando se muestra solo EE, se está expresando solo el 65 % del intervalo de confianza lo que resulta poco útil.
+
+Lo normal es que se use el 95 %, que sería la media ± 1.96 × SE.
+
+Entonces, ¿cuándo se debería mostrar el EE? Pues la respuesta corta es "nunca". El EE puede ser visto como un paso intermedio para calcular los IC (Andrade 2020, altman 2005).
 
 # Referencias
 
 Streiner DL. Maintaining standards: Differences between the standard deviation and standard error, and when to use each. Can J Psychiatry. 1996; 41: 498--502
+
+Andrade, C. "Understanding the difference between standard deviation and standard error of the mean, and knowing when to use which." *Indian Journal of Psychological Medicine* 42.4 (2020): 409-410.
