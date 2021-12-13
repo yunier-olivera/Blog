@@ -1,0 +1,59 @@
+---
+title: "Estándares: la desviación y el error"
+author: Yunier Olivera
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output:
+  bookdown::word_document2:
+    toc: yes
+    number_sections: no
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_float:
+        collapsed: no
+    number_sections: no
+    self_contained: no
+bibliography: references.bib
+csl: ../../resources/coral-reefs-es.csl
+---
+
+No es raro encontrar que muchos investigadores y estudiantes sepan qué significa la desviación y el error estándar de la media, pero pocos saben cuál debería usarse y por qué [@andrade2020].
+
+En mi caso, aunque me resisto a aceptarlo, no me queda más remedio que incluirme en el segundo grupo también. Así que decidí revisar este tema y ahora compartiré contigo lo que encontré.
+
+# Algunos conceptos
+
+La **desviación estándar** (DE, en inglés SD) es la distribución (o la dispersión) de los valores individuales alrededor de la media. Una DE grande indica que los valores están muy dispersos alrededor de la media. Por el contrario, si la DE es pequeña, la dispersión también es pequeña.
+
+Otro aspecto importante es que, en una distribución normal, existe una relación específica entre la media y la DE: la media ± 1 DE incluye el 68.3 % de la población, la media ± 2 DE contiene el 95.5 % de la población y la media ± 3 DE contiene 99.7 % de la población [@andrade2020].
+
+Como nota curiosa quiero mencionar que la desviación estándar es una medida útil para describir la variabilidad sin importar que distribución de los datos [@altman2005]. Alrededor del 95 % de las observaciones de cualquier distribución cae dentro de los límites de 2 DE, aunque es posible que esta no sea simétrica.
+
+El **error estándar** (EE, en inglés SE) refleja la variabilidad de la media de las muestras si hubiésemos repetido el análisis muchas veces.
+
+$$
+EE = \frac{DE} {\sqrt{N}} \quad \small{\text{donde N es el tamaño de muestra}}
+$$
+
+El valor medio que obtenemos en nuestro estudio es solo una aproximación del valor medio en la población. Si repetimos nuestro estudio un gran número de veces, obtendremos valores diferentes para la media cada vez. El EE expresa esta variabilidad en las medias de los estudios subsecuentes.
+
+Los **intervalos de confianza** (IC, en inglés CI) es el rango dentro del cual se encuentra la media verdadera o la diferencia entre las medias. Normalmente se expresa el 90%, 95% o 99 % del intervalo de confianza.
+
+
+# Cuándo usarlos
+
+De acuerdo con @streiner1996, cuando se describe una muestra, con expresar la media y la DE es suficiente porque los lectores pueden calcular el EE y el **intervalo de confianza** (IC, en inglés CI). El IC es el rango dentro del cual se encuentra la media verdadera o la diferencia entre las medias. Normalmente se expresa el 90%, 95% o 99 % del intervalo de confianza..
+
+Al graficar o tabular, algunos autores muestran el EE alrededor de la media porque muestra menos dispersión (el EE siempre es menor que la DE) y los gráficos indican mayor precision y lucen mejor. Esto es común en estudios de ecología donde los datos son muy variables y las medidas de dispersión son muy grandes. Sin embargo, cuando se muestra solo EE, se está expresando solo el 65 % del intervalo de confianza lo que resulta poco útil.
+
+```{r}
+
+
+```
+
+
+Lo normal es que se use el 95 %, que sería la media ± 1.96 × EE.
+
+Entonces, ¿cuándo se debería mostrar el EE? Pues la respuesta corta es "nunca". El EE puede ser visto como un paso intermedio para calcular los IC \[@andrade2020, @altman2005\].
+
+# Referencias
