@@ -3,9 +3,6 @@ title: "Estándares: la desviación y el error"
 author: Yunier Olivera
 date: "`r format(Sys.time(), '%b %d, %Y')`"
 output:
-  bookdown::word_document2:
-    toc: yes
-    number_sections: no
   bookdown::html_document2:
     df_print: paged
     toc: yes
@@ -13,6 +10,9 @@ output:
         collapsed: no
     number_sections: no
     self_contained: no
+  bookdown::word_document2:
+    toc: yes
+    number_sections: no
 bibliography: references.bib
 csl: ../../resources/coral-reefs-es.csl
 ---
@@ -39,21 +39,97 @@ El valor medio que obtenemos en nuestro estudio es solo una aproximación del va
 
 Los **intervalos de confianza** (IC, en inglés CI) es el rango dentro del cual se encuentra la media verdadera o la diferencia entre las medias. Normalmente se expresa el 90%, 95% o 99 % del intervalo de confianza.
 
-
 # Cuándo usarlos
 
 De acuerdo con @streiner1996, cuando se describe una muestra, con expresar la media y la DE es suficiente porque los lectores pueden calcular el EE y el **intervalo de confianza** (IC, en inglés CI). El IC es el rango dentro del cual se encuentra la media verdadera o la diferencia entre las medias. Normalmente se expresa el 90%, 95% o 99 % del intervalo de confianza..
 
 Al graficar o tabular, algunos autores muestran el EE alrededor de la media porque muestra menos dispersión (el EE siempre es menor que la DE) y los gráficos indican mayor precision y lucen mejor. Esto es común en estudios de ecología donde los datos son muy variables y las medidas de dispersión son muy grandes. Sin embargo, cuando se muestra solo EE, se está expresando solo el 65 % del intervalo de confianza lo que resulta poco útil.
 
-```{r}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(extrafont)
+
+
+#  Motor Trend Car Road Tests dataset en R
+data("mtcars")
+
+
+#  Cálculo de la media y medidas de dispersion
+mtcars_bars <- mtcars |> 
+   group_by(cyl) |> 
+   summarise(hp_mean = mean(hp),          # media por cilindros
+             hp_sd = sd(hp),              # desviación estándar (DE)
+             hp_n = n()) |>               # número de muestras (N)
+   mutate(hp_se = hp_sd / sqrt(hp_n),     # error estándar (EE)
+          hp_ci = hp_se * 1.96) |>        # intervalo de confianza (IC)
+   pivot_longer(cols = c(hp_sd, hp_se, hp_ci))
+
+
+#  Gráfico
+p <- mtcars_bars |> 
+   mutate(name = factor(name, levels = c("hp_sd", "hp_se", "hp_ci"))) |> 
+   ggplot(aes(name, hp_mean, fill = factor(cyl))) +
+   geom_col(position = position_dodge()) +
+   
+   # desviación estándar (DE)
+   geom_errorbar(data = mtcars_bars |> filter(name == "hp_sd"),
+                 aes(ymin = hp_mean - value,
+                     ymax = hp_mean + value),
+                 width = 0.1,
+                 position = position_dodge(.9)) +
+   
+   # error estándar (EE)
+   geom_errorbar(data = mtcars_bars |> filter(name == "hp_se"),
+                 aes(ymin = hp_mean - value,
+                     ymax = hp_mean + value),
+                 width = 0.1,
+                 position = position_dodge(.9)) +
+   
+   # # intervalo de confianza (IC)
+   geom_errorbar(data = mtcars_bars |> filter(name == "hp_ci"),
+                 aes(ymin = hp_mean - value,
+                     ymax = hp_mean + value),
+                 width = 0.1,
+                 position = position_dodge(.9)) +
+   scale_x_discrete(labels = c("Desviación estándar", "Error estándar",
+                               "Intervalo de confianza" )) +
+   labs(x = "", y = "Caballos de fuerza", fill = "Cilindros:",
+        title = "Demostración de medidas alrededor de la media",
+        caption = paste("DE: Desviación estándar; EE: Error estándar;",
+                        "IC: Intervalo de confianza")) +
+   ggpubr::theme_pubr()
+
+
+#  Comentarios para el gráfico
+comentarios <- tibble(x = c(0.6, 1.6, 2.6),
+                      y = c(215, 200, 180),
+                      xend = c(0.7, 1.7, 2.8),
+                      yend = c(160, 160, 150),
+                      label = c("DE: útil porque expresa \n la dispersion de los datos",
+                                  "EE: poco útil, solo expresa \n el 65% del IC",
+                                  "IC: útil, es el rango de \n la media verdadera"))
+
+
+#  Adicionamos flechas al gráfico
+p + geom_curve(data = comentarios,
+               aes(x = x, y = y, xend = xend, yend = yend),
+               curvature = 0.2, size = 0.3, color = "#a36264",
+               arrow = arrow(length = unit(0.02, "npc")),
+               inherit.aes = F) +
+   
+   #  y comentarios
+   geom_text(data = comentarios,
+             aes(x = x - 0.1, y = y + 20, label = label),
+             hjust = 0, color = "#a36264",
+             family = "Comic Sans MS", fontface = "bold",
+             inherit.aes = F)
 
 
 ```
 
-
 Lo normal es que se use el 95 %, que sería la media ± 1.96 × EE.
 
-Entonces, ¿cuándo se debería mostrar el EE? Pues la respuesta corta es "nunca". El EE puede ser visto como un paso intermedio para calcular los IC \[@andrade2020, @altman2005\].
+Entonces, ¿cuándo se debería mostrar el EE? Pues la respuesta corta es "nunca". El EE puede ser visto como un paso intermedio para calcular los IC [@andrade2020, @altman2005].
 
 # Referencias
