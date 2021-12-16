@@ -39,5 +39,8 @@ vignettes/*.pdf
 .Renviron
 
 # Unwanted files and folders
-shipping/Covid.zip
-resources/publish.R
+posts/Covid.zip
+resources/p.R
+posts/2021-12-23-Confidence-intervals
+posts/2021-12-30-PERMANOVA
+
