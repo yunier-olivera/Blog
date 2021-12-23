@@ -1,0 +1,105 @@
+---
+title: PERMANOVA
+author: Yunier Olivera
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output:
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_float:
+        collapsed: no
+    number_sections: no
+    self_contained: no
+  bookdown::word_document2:
+    toc: yes
+    number_sections: no
+bibliography: references.bib
+csl: ../../resources/coral-reefs-es.csl
+---
+
+PERMANOVA es una prueba no paramétrica de diferencia significativa entre dos o más grupos, basada en cualquier medida de distancia.
+
+# Qué es un PERMANOVA
+
+El análisis de varianza multivariado (MANOVA) basado permutaciones (*permutational multivariate analysis of variance*, PERMANOVA) es una prueba estadística multivariada no paramétrica. El PERMANOVA compara dos o más grupos de objetos y evalúa la hipótesis nula de que los centroides (*e.g.* la media) y la dispersión son equivalentes para todos los grupos, o sea, no hay diferencias.
+
+Una diferencia significativa evidencia diferencias en los centroides o en la dispersión; repito este detalle porque es importante, PERMANOVA no distingue entre centroides y dispersión. La significación puede darse debido a diferencias en la dispersión, aunque no cambien los centroides [@anderson2001].
+
+Para verificar si es la dispersión la que difiere entre los grupos, se puede aplicar una prueba como PERMDISP (en el software PRIMER) o usar `betadisper()` en vegan.
+
+Es similar al ANOVA en el sentido de que compara grupos, pero se diferencia en que ANOVA calcula la *p* a partir de la asunción de normalidad y PERMANOVA no asume ninguna distribución para los datos. PERMANOVA calcula la *p* comparando el estadístico *F* de los datos reales con las *F* de los datos obtenidos a partir de permutaciones. Dichas permutaciones se hacen intercambiando observaciones entre los grupos. Para diseños que usan más de un factor, hay que tener en cuenta el tipo de permutación a aplicar.
+
+# Ventajas del PERMANOVA
+
+La única asunción del PERMANOVA es la intercambiabilidad de observaciones entre grupos [@anderson2001]. Esto básicamente encabeza las ventajas con respecto al ANOVA, que en cambio tiene tres asunciones: normalidad, homocedasticidad e independencia de errores.
+
+PERMANOVA es robusto frente la heterogeneidad en diseños balanceados y es menos robusto ante diseños no balanceados, cuando el tamaño de muestra difiere entre las muestras (Anderson y Walsh 2013).
+
+De acuerdo con @anderson2013 Anderson y Walsh (2013), PERMANOVA es generalmente más potente para detectar cambios en la estructura comunitaria, comparado con Mantel y ANOSIM.
+
+# Aplicación en R
+
+PERMANOVA se puede realizar en programas como el PAST, PRIMER y en R con la función `adonis()` del paquete `vegan`.
+
+A continuación, veremos un ejemplo breve sobre cómo realizar el análisis en R. Usaremos los datos de mediciones en tres especies de pingüinos, disponible en el paquete `palmerpenguins`.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+library(palmerpenguins)
+data("penguins")
+```
+
+Con el PERMANOVA buscamos determinar si hay diferencias entre los grupos (especies en este caso) en relación con las variables respuesta (largo del pico y peso corporal).
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+
+penguin <- penguins |>
+   drop_na()
+
+penguins |> 
+   ggplot(aes(body_mass_g, bill_length_mm,
+              color = species)) +
+   geom_point(size = 3, alpha = 0.5) +
+   theme_minimal()
+```
+
+Usaremos la función `adonis()` del paquete vegan para realizar el PERMANOVA.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+library(vegan)
+
+penguins_traits <- penguin |>
+   select(body_mass_g, flipper_length_mm) 
+
+adonis(penguins_traits ~ species, data = penguin)
+```
+
+El resultado indica que hay diferencias significativas en el largo del pico y el peso corporal entre los pinguinos. Pero ¿cuáles especies se diferencian entre sí?
+
+Para responder esa pregunta haremos un análisis *a posteriori* del PERMANOVA.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+library(RVAideMemoire)
+
+# La función tiene predeterminada un ajuste de la p para evitar 
+# el problema de las comparaciones múltiples
+pairwise.perm.manova(penguins_traits, penguin$species)
+```
+
+El análisis indica que las tres especies se diferencian entre sí.
+
+# Comentarios adiciones sobre la aplicación en R
+
+El paquete vegan tiene dos funciones para realizar un PERMANOVA: `adonis()` y `adonis2()`. En una respuesta dada en [Stackexchange](https://stats.stackexchange.com/questions/476256/adonis-vs-adonis2), se aclara que ambas funciones tienen el mismo objetivo. Son una implementación de un PERMANOVA.
+
+En `adonis` los términos se prueban secuencialmente y esta es la única opción. Esto significa que el orden en el que se ingresan las variables es importante. Por ejemplo, utilizando los datos anteriores, `adonis(penguins_traits ~ species + sex, data = penguin)` dará un resultado diferente al de `adonis(penguins_traits ~ sex + species, data = penguin)`. Esto se debe a que la primera variable explicativa se agrega al modelo y luego se agrega la siguiente para ver si explica una variación significativamente mayor que no se explica por la variable anterior.
+
+Esto es equivalente a usar `by = "terms"` en `adonis2`. Si no desea que el orden importe, puede usar `adonis2` con `by = "margin"`. Si se desea verificar si el modelo en su conjunto es significativo, se puede usar `by = NULL`. La razón por la que el orden no importa cuando se usa `by = "margin"` es que la significancia se prueba con un modelo que incluye todas las demás variables, no solo las que la preceden en la fórmula.
+
+Las diferencias entre ambas funciones posiblemente se deban en parte a que están basadas en trabajos diferentes. Según la página de ayuda, `adonis` se basa en el algoritmo de @anderson2001 que trata de un MANOVA basado en permutaciones, mientras que `adonis2` se basa en los principios de @mcardle2001 que trata sobre el Análisis de Redundancia basado en distancias.
+
+# Referencias

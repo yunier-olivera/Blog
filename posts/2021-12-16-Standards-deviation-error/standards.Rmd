@@ -35,9 +35,9 @@ $$
 EE = \frac{DE} {\sqrt{N}} \quad \small{\text{donde N es el tamaño de muestra}}
 $$
 
-El valor medio que obtenemos en nuestro estudio es solo una aproximación del valor medio en la población. Si repetimos nuestro estudio un gran número de veces, obtendremos valores diferentes para la media cada vez. El EE expresa esta variabilidad en las medias de los estudios subsecuentes.
+El valor medio o la media que obtenemos en nuestro estudio es solo una aproximación del valor medio en la población. Si repetimos nuestro estudio un gran número de veces, obtendremos valores diferentes para la media cada vez. El EE expresa esta variabilidad en las medias de los estudios subsecuentes.
 
-Los **intervalos de confianza** (IC, en inglés CI) es el rango dentro del cual se encuentra la media verdadera o la diferencia entre las medias. Normalmente se expresa el 90%, 95% o 99 % del intervalo de confianza.
+El **intervalo de confianza** (IC, en inglés CI) es el rango dentro del cual se encuentra la media verdadera o la diferencia entre las medias. Normalmente se expresa el 90%, 95% o 99 % del intervalo de confianza.
 
 # Cuándo usarlos
 
@@ -130,6 +130,6 @@ p + geom_curve(data = comentarios,
 
 Lo normal es que se use el 95 %, que sería la media ± 1.96 × EE.
 
-Entonces, ¿cuándo se debería mostrar el EE? Pues la respuesta corta es "nunca". El EE puede ser visto como un paso intermedio para calcular los IC [@andrade2020, @altman2005].
+Entonces, ¿cuándo se debería mostrar el EE? Pues la respuesta corta es "nunca". El EE puede ser visto como un paso intermedio para calcular los IC \[@andrade2020, @altman2005\].
 
 # Referencias
