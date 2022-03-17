@@ -130,6 +130,6 @@ p + geom_curve(data = comentarios,
 
 Lo normal es que se use el 95 %, que sería la media ± 1.96 × EE.
 
-Entonces, ¿cuándo se debería mostrar el EE? Pues la respuesta corta es "nunca". El EE puede ser visto como un paso intermedio para calcular los IC \[@andrade2020, @altman2005\].
+Entonces, ¿cuándo se debería mostrar el EE? Pues la respuesta corta es "nunca". El EE puede ser visto como un paso intermedio para calcular los IC $$@andrade2020, @altman2005$$.
 
 # Referencias

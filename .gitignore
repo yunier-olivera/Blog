@@ -41,6 +41,4 @@ vignettes/*.pdf
 # Unwanted files and folders
 posts/Covid.zip
 resources/p.R
-posts/2021-12-23-Confidence-intervals
-posts/2021-12-30-PERMANOVA
 
